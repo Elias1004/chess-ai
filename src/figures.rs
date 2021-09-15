@@ -10,16 +10,13 @@ pub struct Piece {
 
 #[derive(Serialize, Copy, Clone, PartialEq, Eq, Debug, Deserialize)]
 pub enum Color {
-    White,
-    Black,
+    White = 1,
+    Black = -1,
 }
 
 impl Color {
     pub fn as_number(self) -> i8 {
-        match self {
-            Color::White => 1,
-            Color::Black => -1,
-        }
+        self as i8
     }
 
     pub fn flipped(self) -> Self {
@@ -259,6 +256,7 @@ impl Piece {
         }
     }
 
+    #[allow(dead_code)]
     pub fn reachables_collect(self, pos: Pos, board: &Board) -> Vec<Pos> {
         let mut result = Vec::new();
         self.reachables(pos, board, |pos| result.push(pos));
@@ -294,13 +292,6 @@ mod tests {
         assert_eq!(
             reachables,
             vec![
-                (0, 1),
-                (0, 2),
-                (0, 3),
-                (0, 4),
-                (0, 5),
-                (0, 6),
-                (0, 7),
                 (1, 0),
                 (2, 0),
                 (3, 0),
@@ -308,6 +299,13 @@ mod tests {
                 (5, 0),
                 (6, 0),
                 (7, 0),
+                (0, 1),
+                (0, 2),
+                (0, 3),
+                (0, 4),
+                (0, 5),
+                (0, 6),
+                (0, 7),
             ]
         );
     }
@@ -327,16 +325,17 @@ mod tests {
             color: Color::Black,
             figure: Figure::Pawn,
         });
-        let reachables =
+        let mut reachables =
             board.0[0][0].unwrap().reachables_collect((0, 0), &board);
-        assert_eq!(
-            reachables,
-            vec![(0, 1), (0, 2), (0, 3), (1, 0), (2, 0), (3, 0), (4, 0)]
-        );
+        reachables.sort();
+        let mut expected =
+            vec![(1, 0), (2, 0), (3, 0), (4, 0), (0, 1), (0, 2), (0, 3)];
+        expected.sort();
+        assert_eq!(reachables, expected);
     }
 
     #[test]
-    fn king() {
+    fn white_king() {
         let mut board = Board::empty();
         board.0[4][4] = Some(Piece {
             color: Color::White,
@@ -354,11 +353,40 @@ mod tests {
             color: Color::Black,
             figure: Figure::Pawn,
         });
-        let reachables =
+        let mut reachables =
             board.0[4][4].unwrap().reachables_collect((4, 4), &board);
-        assert_eq!(
-            reachables,
-            vec![(3, 3), (4, 3), (5, 3), (5, 5), (4, 5), (3, 5), (3, 4)]
-        );
+        reachables.sort();
+        let mut expected =
+            vec![(3, 3), (4, 3), (5, 3), (5, 5), (4, 5), (3, 5), (3, 4)];
+        expected.sort();
+        assert_eq!(reachables, expected);
+    }
+
+    #[test]
+    fn black_king() {
+        let mut board = Board::empty();
+        board.0[4][4] = Some(Piece {
+            color: Color::Black,
+            figure: Figure::King,
+        });
+        board.0[5][4] = Some(Piece {
+            color: Color::Black,
+            figure: Figure::Pawn,
+        });
+        board.0[3][3] = Some(Piece {
+            color: Color::White,
+            figure: Figure::Pawn,
+        });
+        board.0[3][5] = Some(Piece {
+            color: Color::White,
+            figure: Figure::Pawn,
+        });
+        let mut reachables =
+            board.0[4][4].unwrap().reachables_collect((4, 4), &board);
+        reachables.sort();
+        let mut expected =
+            vec![(3, 3), (4, 3), (5, 3), (5, 5), (4, 5), (3, 5), (3, 4)];
+        expected.sort();
+        assert_eq!(reachables, expected);
     }
 }

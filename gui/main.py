@@ -35,6 +35,7 @@ def main():
             if event.type == pygame.QUIT:
                 plt.plot(timeTaken)
                 plt.ylabel('Time taken in seconds')
+                plt.nlabel('Move')
                 plt.show()
                 running = False
                 quit()

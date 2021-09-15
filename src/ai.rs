@@ -20,14 +20,6 @@ pub fn get_all_possible_moves(board: &Board, whose_turn: Color) -> Vec<Move> {
             let from = (x, y);
             match board.get(from) {
                 Some(piece) if piece.color == whose_turn => {
-                    /*
-                    result.extend(
-                        piece
-                            .reachables(from, board)
-                            .into_iter()
-                            .map(|pos| Move { from, to: pos }),
-                    );
-                    */
                     piece.reachables(from, board, |pos| {
                         result.push(Move { from, to: pos })
                     });
