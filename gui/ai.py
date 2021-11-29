@@ -7,7 +7,7 @@ class RustAI:
         self.color = color
         color_string = "white" if color == 1 else "black"
         self.max_look_ahead = look_ahead
-        self.process = subprocess.Popen(["../target/release/chess-ai", color_string, str(look_ahead)],
+        self.process = subprocess.Popen(["C:/Users/Elias/.cargo/targets/release/chess-ai.exe", color_string, str(look_ahead)],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, encoding="utf8")
 
 
