@@ -1,4 +1,4 @@
-#![feature(extend_one, test)]
+#![feature(test)]
 extern crate test;
 
 mod ai;
